@@ -6,8 +6,7 @@ The plugin combines Neovim's powerful search capabilities with a local corpus of
 
 > [!NOTE]
 > This is a very early-stage plugin!\
-> The corpus currently contains selected paragraphs from the Rechtsphilosophie.\
-> The text is being expanded step by step toward a complete edition.\
+> The text is being expanded step by step toward a complete edition.
 
 ## Why?
 
@@ -35,23 +34,23 @@ The plugin follows standard academic Hegel citation conventions:
 
 Each paragraph file contains up to three textual layers:
 
-| Layer | Abbreviation | Source |
-|---|---|---|
-| **Paragraph** (§) | — | Hegel's own published text (1821) |
-| **Anmerkung** | Anm. | Hegel's own remark, part of the 1821 edition |
-| **Zusatz** | Zus. | Compiled by Eduard Gans (1833) from student lecture notes |
+| Layer             | Abbreviation | Source                                                    |
+| ----------------- | ------------ | --------------------------------------------------------- |
+| **Paragraph** (§) | —            | Hegel's own published text (1821)                         |
+| **Anmerkung**     | Anm.         | Hegel's own remark, part of the 1821 edition              |
+| **Zusatz**        | Zus.         | Compiled by Eduard Gans (1833) from student lecture notes |
 
 Standard citation format: `Hegel, GPR § 142 Anm.`
 
 ### Abbreviations
 
-| Abbreviation | Meaning |
-|---|---|
-| **GPR** | Grundlinien der Philosophie des Rechts |
-| **Anm.** | Anmerkung (Remark) |
-| **Zus.** | Zusatz (Addition) |
-| **TWA** | Theorie Werkausgabe (Suhrkamp) |
-| **GW** | Gesammelte Werke (Meiner) |
+| Abbreviation | Meaning                                |
+| ------------ | -------------------------------------- |
+| **GPR**      | Grundlinien der Philosophie des Rechts |
+| **Anm.**     | Anmerkung (Remark)                     |
+| **Zus.**     | Zusatz (Addition)                      |
+| **TWA**      | Theorie Werkausgabe (Suhrkamp)         |
+| **GW**       | Gesammelte Werke (Meiner)              |
 
 ## Requirements
 
@@ -137,21 +136,21 @@ require("hegel").setup({
 
 ## Commands
 
-| Command                  | Description                              |
-| ------------------------ | ---------------------------------------- |
-| `:HegelSearch [query]`   | Full-text search across all works        |
-| `:HegelWerke`            | Pick a work, then search within it       |
-| `:HegelZufall`           | Jump to a random passage                 |
-| `:HegelParagraph [nr]`   | Jump to a specific § (e.g. `:HegelParagraph 142`) |
+| Command                | Description                                       |
+| ---------------------- | ------------------------------------------------- |
+| `:HegelSearch [query]` | Full-text search across all works                 |
+| `:HegelWerke`          | Pick a work, then search within it                |
+| `:HegelZufall`         | Jump to a random passage                          |
+| `:HegelParagraph [nr]` | Jump to a specific § (e.g. `:HegelParagraph 142`) |
 
 ## Default Keymaps
 
-| Keymap       | Action             |
-| ------------ | ------------------ |
-| `<leader>hs` | `:HegelSearch`     |
-| `<leader>hw` | `:HegelWerke`      |
-| `<leader>hz` | `:HegelZufall`     |
-| `<leader>hp` | `:HegelParagraph`  |
+| Keymap       | Action            |
+| ------------ | ----------------- |
+| `<leader>hs` | `:HegelSearch`    |
+| `<leader>hw` | `:HegelWerke`     |
+| `<leader>hz` | `:HegelZufall`    |
+| `<leader>hp` | `:HegelParagraph` |
 
 ## Text Corpus
 
@@ -159,20 +158,12 @@ The plugin ships with plaintext files from Hegel's works. Each file includes a Y
 
 ### Currently included
 
-- **Grundlinien der Philosophie des Rechts** (1821) — selected paragraphs (§§ 1-4, 34, 36, 105, 142, 158, 182, 257-258 + Vorrede)
-
-### Text structure
-
-The Rechtsphilosophie (§§ 1-360) is organized as follows:
-
-- **Vorrede** (Preface)
-- **Einleitung** (Introduction): §§ 1-33
-- **Erster Theil — Das abstracte Recht** (Abstract Right): §§ 34-104
-- **Zweiter Theil — Die Moralität** (Morality): §§ 105-141
-- **Dritter Theil — Die Sittlichkeit** (Ethical Life): §§ 142-360
-  - Die Familie (Family): §§ 158-181
-  - Die bürgerliche Gesellschaft (Civil Society): §§ 182-256
-  - Der Staat (The State): §§ 257-360
+- **Die Verfassung Deutschlands** (verfasst 1798-1802, erste Druckausgabe 1893)
+- **Differenz des Fichteschen und Schellingschen Systems der Philosophie** (1801)
+- **Über das Wesen der philosophischen Kritik überhaupt** (1802)
+- **Glauben und Wissen** (1802)
+- **Grundlinien der Philosophie des Rechts** (1821)
+- **Wer denkt abstrakt?** (ca. 1807, first published 1835)
 
 ### Adding texts
 
@@ -215,19 +206,17 @@ hegel.nvim/
 ├── plugin/
 │   └── hegel.vim           # Vim command definitions
 ├── texts/
+│   ├── 1807-wer-denkt-abstrakt/
 │   └── 1821-grundlinien-der-philosophie-des-rechts/
-│       ├── 000-vorrede.txt
-│       ├── 001-par-001.txt
-│       ├── ...
-│       └── 360-par-360.txt
 ├── scripts/                # Text fetching utilities (planned)
 └── README.md
 ```
 
 ## Roadmap
 
-- [ ] Complete text of Grundlinien der Philosophie des Rechts (all 360 §§)
+- [ ] Review and correct remaining OCR artifacts in the text
 - [ ] Include Zusätze (Gans 1833 edition) as separate textual layer
+- [ ] Add TWA and GW page numbers to metadata
 - [ ] Add more works (Phänomenologie des Geistes, Wissenschaft der Logik, Enzyklopädie)
 - [ ] `:HegelStelle` — look up passages by TWA or GW page number
 - [ ] Citation export to clipboard (`Hegel, GPR § 142 Anm.`)
@@ -239,4 +228,4 @@ hegel.nvim/
 
 The plugin code is released under the MIT License.
 
-Hegel's texts (1821/1833) are in the public domain.
+Hegel's texts are in the public domain.
