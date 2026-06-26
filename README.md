@@ -2,7 +2,7 @@
 
 Search and browse the works of G.W.F. Hegel in German directly from Neovim.
 
-The plugin combines Neovim's powerful search capabilities with a local corpus of Hegel's writings and integrates with fuzzy finders for full-text search, work browsing, paragraph navigation, and serendipitous discovery.
+The plugin combines Neovim's search workflow with a local corpus of Hegel's writings for full-text search, work browsing, paragraph navigation, and serendipitous discovery.
 
 > [!NOTE]
 > This is a very early-stage plugin!\
@@ -21,25 +21,15 @@ Hegel is notoriously difficult to understand and requires constant re-reading. Y
 - **Random passage** for inspiration with `:HegelZufall`
 - Search ignores metadata headers and searches only the text body
 - **Jump to paragraph** with `:HegelParagraph` — navigate directly to any § in the Rechtsphilosophie
-- Texts annotated with **TWA** (Theorie Werkausgabe) and **GW** (Gesammelte Werke) references
+- Texts include **TWA** (Theorie Werkausgabe) and **GW** (Gesammelte Werke) metadata; detailed page numbers are still incomplete
 - Opens texts in **read-only** mode by default
-- Works with **fzf-lua** (default) or **telescope.nvim**
+- Search works with **fzf-lua** (default) or **telescope.nvim**
 
 ## Zitierweise (Citation System)
 
-The plugin follows standard academic Hegel citation conventions:
+The project follows standard academic Hegel citation conventions where the corpus already supports them. For the _Grundlinien der Philosophie des Rechts_, the primary identifier is the paragraph number (§). TWA and GW metadata are present, but detailed page numbers still need to be added.
 
-- **Primary identifier**: § (paragraph number) — edition-independent, universally recognized
-- **TWA**: Theorie Werkausgabe (Suhrkamp), ed. Moldenhauer/Michel — the most widely used edition
-- **GW**: Gesammelte Werke (Meiner), the historisch-kritische Ausgabe — the scholarly standard
-
-Each paragraph file contains up to three textual layers:
-
-| Layer             | Abbreviation | Source                                                    |
-| ----------------- | ------------ | --------------------------------------------------------- |
-| **Paragraph** (§) | —            | Hegel's own published text (1821)                         |
-| **Anmerkung**     | Anm.         | Hegel's own remark, part of the 1821 edition              |
-| **Zusatz**        | Zus.         | Compiled by Eduard Gans (1833) from student lecture notes |
+Paragraph files currently contain Hegel's published paragraph text and, where present, Hegel's own Anmerkung. Zusätze compiled by Eduard Gans are planned, but not bundled yet.
 
 Standard citation format: `Hegel, GPR § 142 Anm.`
 
@@ -57,8 +47,8 @@ Standard citation format: `Hegel, GPR § 142 Anm.`
 
 - Neovim >= 0.8
 - [fzf-lua](https://github.com/ibhagwan/fzf-lua) or
-  [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-- [ripgrep](https://github.com/BurntSushi/ripgrep) for `fzf-lua` search
+  [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) for `:HegelSearch`
+- Optional: [ripgrep](https://github.com/BurntSushi/ripgrep) for faster `fzf-lua` search
 
 ## Installation
 
@@ -112,8 +102,8 @@ use {
 
 ```lua
 require("hegel").setup({
-  -- Directory containing the text corpus.
-  -- Defaults to the texts/ directory bundled with the plugin.
+  -- Preferred external text directory.
+  -- Falls back to the bundled texts/ directory if this path does not exist.
   texts_dir = vim.fn.stdpath("data") .. "/hegel-texte",
 
   -- Picker backend: "fzf-lua" or "telescope"
@@ -121,9 +111,6 @@ require("hegel").setup({
 
   -- Open texts in read-only mode
   readonly = true,
-
-  -- Show edition references (TWA, GW)
-  show_references = true,
 
   -- Key mappings (set to false to disable)
   keymaps = {
@@ -155,7 +142,7 @@ require("hegel").setup({
 
 ## Text Corpus
 
-The plugin ships with plaintext files from Hegel's works. Each file includes a YAML-style metadata header with the work title, paragraph number, section name, TWA and GW references, and year of first publication.
+The plugin ships with plaintext files from Hegel's works. Each file includes a YAML-style metadata header with the work title, section name, TWA and GW metadata, and year of first publication. Paragraph files for the _Grundlinien der Philosophie des Rechts_ also include a `Paragraph` field.
 
 ### Currently included
 
@@ -176,8 +163,8 @@ subdirectory represents one work. Files should follow this format:
 Werk: Title of the Work
 Paragraph: § 142
 Abschnitt: Section Name
-TWA: Bd. 7, S. 292
-GW: Bd. 14,1, S. 137
+TWA: Bd. 7
+GW: Bd. 14,1
 Erstausgabe: 1821
 ---
 
@@ -207,9 +194,17 @@ hegel.nvim/
 ├── plugin/
 │   └── hegel.lua           # Neovim command definitions
 ├── texts/
+│   ├── 1798-1802-die-verfassung-deutschlands/
+│   ├── 1801-differenz-des-fichteschen-und-schellingschen-systems-der-philosophie/
+│   ├── 1802-glauben-und-wissen/
+│   ├── 1802-ueber-das-wesen-der-philosophischen-kritik/
 │   ├── 1807-wer-denkt-abstrakt/
 │   └── 1821-grundlinien-der-philosophie-des-rechts/
-├── scripts/                # Text fetching utilities (planned)
+├── scripts/
+│   ├── build_minor_works.py
+│   ├── check_corpus.py
+│   ├── extract_vorrede.py
+│   └── parse_ocr.py
 └── README.md
 ```
 
@@ -221,9 +216,6 @@ hegel.nvim/
 - [ ] Add more works (Phänomenologie des Geistes, Wissenschaft der Logik, Enzyklopädie)
 - [ ] `:HegelStelle` — look up passages by TWA or GW page number
 - [ ] Citation export to clipboard (`Hegel, GPR § 142 Anm.`)
-- [ ] Begriffregister (concept index) for key philosophical terms
-- [ ] Custom `ft=hegel` syntax highlighting for §, Anmerkung, Zusatz layers
-- [ ] `scripts/fetch_texts.sh` to download texts from public domain sources
 
 ## License
 
