@@ -19,6 +19,7 @@ Hegel is notoriously difficult to understand and requires constant re-reading. Y
 - **Full-text search** across all of Hegel's works via `:HegelSearch`
 - **Browse by work** with `:HegelWerke`
 - **Random passage** for inspiration with `:HegelZufall`
+- Search ignores metadata headers and searches only the text body
 - **Jump to paragraph** with `:HegelParagraph` — navigate directly to any § in the Rechtsphilosophie
 - Texts annotated with **TWA** (Theorie Werkausgabe) and **GW** (Gesammelte Werke) references
 - Opens texts in **read-only** mode by default
@@ -57,7 +58,7 @@ Standard citation format: `Hegel, GPR § 142 Anm.`
 - Neovim >= 0.8
 - [fzf-lua](https://github.com/ibhagwan/fzf-lua) or
   [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-- [ripgrep](https://github.com/BurntSushi/ripgrep) (used by both pickers)
+- [ripgrep](https://github.com/BurntSushi/ripgrep) for `fzf-lua` search
 
 ## Installation
 
@@ -204,7 +205,7 @@ hegel.nvim/
 │       ├── picker.lua      # Work browser and random passage
 │       └── paragraph.lua   # Paragraph (§) navigation
 ├── plugin/
-│   └── hegel.vim           # Vim command definitions
+│   └── hegel.lua           # Neovim command definitions
 ├── texts/
 │   ├── 1807-wer-denkt-abstrakt/
 │   └── 1821-grundlinien-der-philosophie-des-rechts/
