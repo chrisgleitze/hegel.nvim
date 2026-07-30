@@ -4,7 +4,6 @@ M.config = {
 	texts_dir = vim.fn.stdpath("data") .. "/hegel-texte",
 	picker = "fzf-lua",
 	readonly = true,
-	show_references = true,
 	keymaps = {
 		search = "<leader>hs",
 		werke = "<leader>hw",

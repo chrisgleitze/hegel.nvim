@@ -69,7 +69,7 @@ function body_start(file, line, n) {
 
   return table.concat({
     "rg",
-    "--column --line-number --no-heading --color=never --smart-case",
+    "--column --line-number --no-heading --color=never --smart-case --fixed-strings",
     "--glob '*.txt'",
     "-e",
     vim.fn.shellescape(query or ""),
