@@ -46,8 +46,11 @@ Standard citation format: `Hegel, GPR § 142 Anm.`
 ## Requirements
 
 - Neovim >= 0.8
-- [fzf-lua](https://github.com/ibhagwan/fzf-lua) or
-  [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) for `:HegelSearch`
+- One search picker for `:HegelSearch`: [fzf-lua](https://github.com/ibhagwan/fzf-lua),
+  [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim), or
+  [fff.nvim](https://github.com/dmtrKovalenko/fff)
+- FFF requires its own binary installation; follow the upstream installation
+  instructions when using `picker = "fff"`.
 - Optional: [ripgrep](https://github.com/BurntSushi/ripgrep) for faster `fzf-lua` search
 
 ## Installation
@@ -122,8 +125,8 @@ require("hegel").setup({
 })
 ```
 
-`fff` is accepted as a picker value, but its search adapter is not implemented
-yet. Use `fzf-lua` or `telescope` for now.
+With `picker = "fff"`, FFF performs the content search and Neovim's native
+selection UI displays the filtered results.
 
 ## Commands
 

@@ -46,6 +46,52 @@ function M._collect_results(query, texts_dir)
   return results
 end
 
+function M._collect_fff_results(query, texts_dir, fff)
+  local results = {}
+  local file_offset = 0
+
+  while true do
+    local ok, page = pcall(fff.content_search, query, {
+      cwd = texts_dir,
+      mode = "plain",
+      smart_case = true,
+      max_matches_per_file = 0,
+      page_size = 200,
+      file_offset = file_offset,
+      time_budget_ms = 0,
+      wait_for_index_ms = 10000,
+    })
+    if not ok then
+      return nil, page
+    end
+    if type(page) ~= "table" then
+      return nil, "fff returned an invalid search result"
+    end
+
+    local items = page.items or {}
+    for _, item in ipairs(items) do
+      local rel = item.relative_path
+      local lnum = tonumber(item.line_number)
+      if rel and lnum then
+        local file = texts_dir .. "/" .. rel
+        local read_ok, lines = pcall(vim.fn.readfile, file)
+        if read_ok and lnum >= M._body_start(lines) and lines[lnum] then
+          local col = (tonumber(item.col) or 0) + 1
+          table.insert(results, string.format("%s:%d:%d:%s", rel, lnum, col, item.line_content or lines[lnum]))
+        end
+      end
+    end
+
+    local next_offset = tonumber(page.next_file_offset)
+    if #items == 0 or not next_offset or next_offset == 0 or next_offset == file_offset then
+      break
+    end
+    file_offset = next_offset
+  end
+
+  return results
+end
+
 function M._rg_cmd(query)
   local body_filter = [[
 function body_start(file, line, n) {
@@ -116,7 +162,7 @@ function M.search(query)
     end
     M._search_telescope(results, texts_dir)
   elseif picker == "fff" then
-    vim.notify("[hegel.nvim] fff picker support is not implemented yet.", vim.log.levels.ERROR)
+    M._search_fff(query, texts_dir)
   else
     vim.notify("[hegel.nvim] Unknown picker: " .. picker, vim.log.levels.ERROR)
   end
@@ -168,6 +214,38 @@ function M._search_fzf(query, texts_dir)
   opts._type = "file"
   opts.previewer = "builtin"
   fzf.fzf_exec(results, opts)
+end
+
+function M._search_fff(query, texts_dir)
+  local ok, fff = pcall(require, "fff")
+  if not ok or type(fff.content_search) ~= "function" then
+    vim.notify("[hegel.nvim] fff.nvim is not installed or unavailable.", vim.log.levels.ERROR)
+    return
+  end
+
+  query = vim.trim(query or "")
+  local results, err
+  if query == "" then
+    results = M._collect_results("", texts_dir)
+  else
+    results, err = M._collect_fff_results(query, texts_dir, fff)
+  end
+  if not results then
+    vim.notify("[hegel.nvim] fff search failed: " .. tostring(err), vim.log.levels.ERROR)
+    return
+  end
+  if #results == 0 then
+    vim.notify("[hegel.nvim] No matches found.", vim.log.levels.WARN)
+    return
+  end
+
+  vim.ui.select(results, {
+    prompt = "Hegel> ",
+  }, function(choice)
+    if choice then
+      M._open_result(choice, texts_dir)
+    end
+  end)
 end
 
 function M._search_telescope(results, texts_dir)

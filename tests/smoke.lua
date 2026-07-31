@@ -31,6 +31,24 @@ vim.fn.writefile({
   "AAAB",
 }, search_file)
 
+package.preload["fff"] = function()
+  return {
+    content_search = function(query, opts)
+      check(query == "A+B" and opts.cwd == dir and opts.mode == "plain", "fff search options")
+      return {
+        items = {
+          { relative_path = "seite-001.txt", line_number = 2, col = 0, line_content = "Werk: A+B" },
+          { relative_path = "seite-001.txt", line_number = 5, col = 0, line_content = "A+B" },
+        },
+        next_file_offset = 0,
+      }
+    end,
+  }
+end
+local fff_results, fff_error = search._collect_fff_results("A+B", dir, require("fff"))
+check(not fff_error and #fff_results == 1 and fff_results[1] == "seite-001.txt:5:1:A+B", "fff header filter")
+package.preload["fff"], package.loaded["fff"] = nil, nil
+
 local results = search._collect_results("A+B", dir)
 check(#results == 1, "literal search")
 check(results[1] == "seite-001.txt:5:1:A+B", "search result location")
