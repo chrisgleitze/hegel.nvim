@@ -115,6 +115,8 @@ function M.search(query)
       return
     end
     M._search_telescope(results, texts_dir)
+  elseif picker == "fff" then
+    vim.notify("[hegel.nvim] fff picker support is not implemented yet.", vim.log.levels.ERROR)
   else
     vim.notify("[hegel.nvim] Unknown picker: " .. picker, vim.log.levels.ERROR)
   end

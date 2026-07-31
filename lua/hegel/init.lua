@@ -1,4 +1,5 @@
 local M = {}
+local valid_pickers = { ["fzf-lua"] = true, telescope = true, fff = true }
 
 M.config = {
 	texts_dir = vim.fn.stdpath("data") .. "/hegel-texte",
@@ -13,7 +14,15 @@ M.config = {
 }
 
 function M.setup(opts)
-	M.config = vim.tbl_deep_extend("force", M.config, opts or {})
+	local config = vim.tbl_deep_extend("force", M.config, opts or {})
+	if not valid_pickers[config.picker] then
+		vim.notify(
+			string.format("[hegel.nvim] Invalid picker %q. Choose fzf-lua, telescope, or fff.", config.picker),
+			vim.log.levels.ERROR
+		)
+		return
+	end
+	M.config = config
 
 	-- Fall back to bundled texts if texts_dir does not exist
 	local bundled = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h:h:h") .. "/texts"

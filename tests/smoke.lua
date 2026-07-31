@@ -10,6 +10,15 @@ check(search._body_start({"---", "Werk: Test", "---", "Text"}) == 4, "header end
 check(search._body_start({"Text"}) == 1, "body without header")
 check(search._rg_cmd("A+B"):find("--fixed-strings", 1, true), "literal ripgrep search")
 
+local old_notify, old_picker, notification = vim.notify, hegel.config.picker, nil
+vim.notify = function(message)
+  notification = message
+end
+hegel.setup({ picker = "unknown" })
+vim.notify = old_notify
+hegel.config.picker = old_picker
+check(notification and notification:find("Invalid picker", 1, true), "invalid picker")
+
 local dir = vim.fn.tempname()
 vim.fn.mkdir(dir, "p")
 local search_file = dir .. "/seite-001.txt"
