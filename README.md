@@ -106,7 +106,7 @@ require("hegel").setup({
   -- Falls back to the bundled texts/ directory if this path does not exist.
   texts_dir = vim.fn.stdpath("data") .. "/hegel-texte",
 
-  -- Picker backend: "fzf-lua" or "telescope"
+  -- Search picker: "fzf-lua", "telescope", or "fff"
   picker = "fzf-lua",
 
   -- Open texts in read-only mode
@@ -121,6 +121,9 @@ require("hegel").setup({
   },
 })
 ```
+
+`fff` is accepted as a picker value, but its search adapter is not implemented
+yet. Use `fzf-lua` or `telescope` for now.
 
 ## Commands
 
